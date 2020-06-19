@@ -39,12 +39,19 @@ class Block {
         let self = this;
         return new Promise((resolve, reject) => {
             // Save in auxiliary variable the current block hash
-                                            
+            let blockHash = self.hash;
+                
             // Recalculate the hash of the Block
             // Comparing if the hashes changed
             // Returning the Block is not valid
-            
-            // Returning the Block is valid
+            self.hash = '';
+            let calcBlockHash = SHA256(JSON.stringify(self)).toString();
+            self.hash = blockHash;
+            if (blockHash === calcBlockHash) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
 
         });
     }
@@ -64,6 +71,17 @@ class Block {
         // Parse the data to an object to be retrieve.
 
         // Resolve with the data if the object isn't the Genesis block
+        let self = this;
+        return new Promise((resolve, reject) => {
+            if (self.height == 0) {
+                // Genesis block
+                reject("Genesis block");
+            }
+            
+            // Decode the data
+            let decodedBody = hex2ascii(self.body);
+            resolve(JSON.parse(decodedBody));
+        })
 
     }
 
